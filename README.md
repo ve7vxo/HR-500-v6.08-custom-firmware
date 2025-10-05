@@ -134,7 +134,7 @@ Version 6.05 Notes. -- VE7VXO
  Version 6.08 Notes. -- VE7VXO
 
   -- Touchscreen bug fixed.  ATU tuning cancel now works.
-  -- Ignores serial ports while tranmitting.
+  -- Ignores serial ports while transmitting.
   -- Transmit inhibited outside 160m - 10m range.
 
 \*/
