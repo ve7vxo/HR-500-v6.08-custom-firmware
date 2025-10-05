@@ -457,7 +457,7 @@ void loop()
     DC_DATA = 0;                                                                    // Re-initialize DC power data display
     fwd_pk = 0;
   }
-  if(!digitalRead(COR_DET)) {                                                       // Keep drive timer zeroed when no RF drive present.
+  if((analogRead(INPUT_RF) < 5)) {                                                  // Keep drive timer zeroed when no RF drive present.
     drv_wait.restart();
   }
   
@@ -516,12 +516,17 @@ void loop()
       }
     }
     if(digitalRead(COR_DET)) {                                                      // So long as RF is present 
-      TR_wait.restart();                                                            // keep resetting T/R and Idle timers
+      TR_wait.restart();                                                            // keep resetting T/R timer
     }
   }
 
-  if (MODE == 0 && (digitalRead(COR_DET)) && !frq_chkd) ReadFreq();                 // Auto band setting only when amp off
-  if (MODE == 0 && !(digitalRead(COR_DET))) frq_chkd = false;                       // Prepare for next auto band setting
+  if (MODE == 0 && (digitalRead(COR_DET)) &&                                        // Auto band setting only when amp off
+  !frq_chkd && drv_wait.hasPassed(500)) {                                           // and drive must be sustained
+    ReadFreq();                                                                     
+  }
+  if (MODE == 0 && !(digitalRead(COR_DET)) && TR_wait.hasPassed(TR_dly)){
+    frq_chkd = false;                                                               // Prepare for next auto band setting
+  }
   
 
   if((analogRead(INPUT_RF) > 3) && !trip){
